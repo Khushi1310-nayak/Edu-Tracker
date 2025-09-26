@@ -13,7 +13,6 @@ import {
 import { load } from "../utils/storage";
 import jsPDF from "jspdf";
 
-
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -45,7 +44,7 @@ export default function Dashboard() {
     datasets: [
       {
         data: [overall.attended, overall.total - overall.attended],
-        backgroundColor: ["#60a5fa", "#f87171"],
+        backgroundColor: ["#60a5fa", "#f87171"], // keep blue/red
       },
     ],
   };
@@ -58,12 +57,13 @@ export default function Dashboard() {
         data: subjects.map((s) =>
           Math.round((s.attended / s.totalClasses) * 100 || 0)
         ),
+        backgroundColor: "#60a5fa",
         barThickness: 24,
+        borderRadius: 4,
       },
     ],
   };
 
-  // What-if attendance simulation
   const [missInput, setMissInput] = useState(0);
   const simulatedPct =
     overall.total === 0
@@ -77,13 +77,11 @@ export default function Dashboard() {
     .filter((ex) => new Date(ex.date) >= new Date())
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Export PDF function
   const exportPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("My Attendance & Exam Report", 10, 10);
 
-    // Subjects
     doc.setFontSize(14);
     doc.text("Subjects:", 10, 20);
     subjects.forEach((s, idx) => {
@@ -94,7 +92,6 @@ export default function Dashboard() {
       );
     });
 
-    // Exams
     const startY = 30 + subjects.length * 7 + 10;
     doc.setFontSize(14);
     doc.text("Exams:", 10, startY);
@@ -112,15 +109,15 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Overall Attendance */}
       <SpotCard className="col-span-1">
-        <h2 className="text-lg font-medium mb-2">Overall Attendance</h2>
-        <div className="flex items-center gap-4">
-          <div className="w-40">
+        <h2 className="text-lg sm:text-xl font-medium mb-2">Overall Attendance</h2>
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="w-full sm:w-40 max-w-[200px]">
             <Doughnut data={doughnutData} />
           </div>
-          <div>
+          <div className="text-center sm:text-left">
             <div className="text-3xl font-bold">{overall.pct}%</div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {overall.attended}/{overall.total} classes
@@ -130,24 +127,31 @@ export default function Dashboard() {
       </SpotCard>
 
       {/* Subject-wise Attendance */}
-      <SpotCard className="col-span-2">
-        <h2 className="text-lg font-medium mb-2">Subject-wise Attendance</h2>
-        <div className="h-64">
+      <SpotCard className="col-span-1 sm:col-span-2 lg:col-span-2">
+        <h2 className="text-lg sm:text-xl font-medium mb-2">Subject-wise Attendance</h2>
+        <div className="w-full h-64 sm:h-72 md:h-80 overflow-x-auto">
           <Bar
             data={barData}
             options={{
+              responsive: true,
+              maintainAspectRatio: false,
               plugins: { legend: { display: false } },
-              scales: { y: { beginAtZero: true, max: 100 } },
+              scales: {
+                y: { beginAtZero: true, max: 100 },
+                x: { ticks: { autoSkip: false } },
+              },
+              barPercentage: 0.6,
+              categoryPercentage: 0.7,
             }}
           />
         </div>
       </SpotCard>
 
       {/* Upcoming Exams */}
-      <SpotCard className="md:col-span-3">
-        <h2 className="text-lg font-medium mb-2">Upcoming Exams</h2>
+      <SpotCard className="col-span-1 sm:col-span-2 lg:col-span-3">
+        <h2 className="text-lg sm:text-xl font-medium mb-2">Upcoming Exams</h2>
         {upcomingExams.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
             No upcoming exams. Add some in the Exams page.
           </p>
         ) : (
@@ -155,26 +159,21 @@ export default function Dashboard() {
             {upcomingExams.map((ex) => (
               <li
                 key={ex.id}
-                className="flex justify-between items-center py-2"
+                className="flex flex-col sm:flex-row justify-between sm:items-center py-2 gap-2"
               >
                 <div>
-                  <div className="font-semibold">
-                    {ex.subject} ({ex.code || "No code"})
-                  </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="font-semibold">{ex.subject} ({ex.code || "No code"})</div>
+                  <div className="text-xs sm:text-sm text-gray-400">
                     {ex.type || "Exam"} | {ex.syllabus?.length || 0} chapters
                   </div>
                 </div>
-                <div className="text-right text-sm">
+                <div className="text-right text-sm sm:text-base">
                   <div>{new Date(ex.date).toLocaleDateString()}</div>
                   <div className="text-gray-400">
                     {Math.max(
                       0,
-                      Math.ceil(
-                        (new Date(ex.date) - new Date()) / (1000 * 60 * 60 * 24)
-                      )
-                    )}{" "}
-                    days left
+                      Math.ceil((new Date(ex.date) - new Date()) / (1000 * 60 * 60 * 24))
+                    )} days left
                   </div>
                 </div>
               </li>
@@ -184,8 +183,8 @@ export default function Dashboard() {
       </SpotCard>
 
       {/* What-if Missed Classes */}
-      <SpotCard className="md:col-span-1">
-        <h2 className="text-lg font-medium mb-2">What if I Miss Classes?</h2>
+      <SpotCard className="col-span-1">
+        <h2 className="text-lg sm:text-xl font-medium mb-2">What if I Miss Classes?</h2>
         <input
           type="number"
           min={0}
@@ -194,29 +193,27 @@ export default function Dashboard() {
           placeholder="Number of classes to miss"
           className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-600 mb-2"
         />
-        <div>
-          <p className="text-sm">
-            If you miss <strong>{missInput}</strong> classes, your overall
-            attendance will drop to <strong>{simulatedPct}%</strong>.
-          </p>
-        </div>
+        <p className="text-sm sm:text-base">
+          If you miss <strong>{missInput}</strong> classes, your overall
+          attendance will drop to <strong>{simulatedPct}%</strong>.
+        </p>
       </SpotCard>
 
       {/* Export & Upload */}
-      <SpotCard className="md:col-span-2 flex flex-col gap-4">
-        <h2 className="text-lg font-medium mb-2">Export & Upload</h2>
+      <SpotCard className="col-span-1 sm:col-span-2 lg:col-span-2 flex flex-col gap-4">
+        <h2 className="text-lg sm:text-xl font-medium mb-2">Export & Upload</h2>
         <button
           onClick={exportPDF}
-          className="px-4 py-2 mx-45 rounded-md bg-indigo-600 text-white w-1/2 justify-center"
+          className="px-4 py-2 rounded-md bg-indigo-600 text-white w-full sm:w-990/992 hover:bg-indigo-700 transition-colors"
         >
           Export Dashboard PDF
         </button>
         <div>
-          <label className="block mb-1 text-sm">Upload Resume / CV:</label>
+          <label className="block mb-1 text-sm sm:text-base">Upload Resume / CV:</label>
           <input
             type="file"
             accept=".pdf,.doc,.docx"
-            className="w-full text-sm text-gray-200 bg-gray-800 border border-gray-600 rounded-md p-2"
+            className="w-full text-sm sm:text-base text-gray-200 bg-gray-800 border border-gray-600 rounded-md p-2"
           />
         </div>
       </SpotCard>

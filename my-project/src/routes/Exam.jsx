@@ -59,7 +59,7 @@ export default function Exams() {
     return d >= now ? "upcoming" : "completed";
   }
 
-  // Group exams by type (Midterm, Final, Quiz, Revision)
+  // Group exams by type
   const grouped = exams.reduce((acc, ex) => {
     if (!acc[ex.type]) acc[ex.type] = [];
     acc[ex.type].push(ex);
@@ -67,24 +67,24 @@ export default function Exams() {
   }, {});
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       {/* Calendar Card */}
-      <SpotCard className="p-6">
+      <SpotCard className="p-4 sm:p-6">
         <h2 className="text-lg font-semibold mb-3">Exam Calendar</h2>
-        <ul className="space-y-2">
+        <ul className="space-y-2 text-sm">
           {exams
             .sort((a, b) => new Date(a.date) - new Date(b.date))
             .map((ex) => (
               <li
                 key={ex.id}
-                className="flex justify-between text-sm border-b border-gray-700 pb-1"
+                className="flex flex-col sm:flex-row sm:justify-between border-b border-gray-700 pb-2"
               >
-                <span>
+                <span className="mb-1 sm:mb-0">
                   {new Date(ex.date).toLocaleDateString()} -{" "}
                   <strong>{ex.subject}</strong> ({ex.type})
                 </span>
                 <span
-                  className={`px-2 rounded-md ${
+                  className={`px-2 py-0.5 rounded-md text-center w-fit sm:w-auto ${
                     statusFor(ex.date) === "upcoming"
                       ? "bg-indigo-600 text-white"
                       : "bg-gray-500 text-white"
@@ -100,11 +100,11 @@ export default function Exams() {
       {/* Groups by Exam Type */}
       {Object.keys(grouped).map((type) => (
         <div key={type}>
-          <h3 className="text-xl font-bold mb-2">{type}s</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-lg sm:text-xl font-bold mb-2">{type}s</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {grouped[type].map((ex) => (
-              <SpotCard key={ex.id}>
-                <div className="flex justify-between items-start">
+              <SpotCard key={ex.id} className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                   <div>
                     <div className="font-semibold">
                       {ex.subject} ({ex.code})
@@ -112,18 +112,16 @@ export default function Exams() {
                     <div className="text-sm text-gray-400">
                       {new Date(ex.date).toLocaleString()}
                     </div>
-
-                    {/* Syllabus Chapters */}
                     <ul className="mt-2 text-sm list-disc list-inside space-y-1">
                       {ex.syllabus.map(
                         (ch, idx) => ch && <li key={idx}>{ch}</li>
                       )}
                     </ul>
                   </div>
-                  <div className="text-right">
+                  <div className="flex sm:flex-col gap-2 self-end sm:self-start">
                     <button
                       onClick={() => edit(ex)}
-                      className="px-3 py-1 rounded-md bg-yellow-500 text-white mr-2"
+                      className="px-3 py-1 rounded-md bg-yellow-500 text-white"
                     >
                       Edit
                     </button>
@@ -148,7 +146,7 @@ export default function Exams() {
             resetForm();
             setShowModal(true);
           }}
-          className="px-6 py-3 rounded-full bg-indigo-600 text-white shadow-lg"
+          className="px-5 py-3 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700"
         >
           + Add Exam
         </button>
@@ -156,13 +154,13 @@ export default function Exams() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-          <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg w-full max-w-lg">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 px-4">
+          <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg w-full max-w-md sm:max-w-lg">
             <h2 className="text-lg font-semibold mb-4">
               {editId ? "Edit Exam" : "Add Exam"}
             </h2>
 
-            <div className="space-y-3 max-h-[70vh] overflow-y-auto">
+            <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
               <input
                 value={form.subject}
                 onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -192,7 +190,7 @@ export default function Exams() {
                 <option>Revision</option>
               </select>
 
-              {/* Dynamic syllabus (up to 10 chapters) */}
+              {/* Dynamic syllabus */}
               <div>
                 <p className="text-sm mb-2">Syllabus (up to 10 chapters):</p>
                 {form.syllabus.map((ch, idx) => (
