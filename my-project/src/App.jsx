@@ -27,7 +27,7 @@ function App() {
             { path: "/attendance", label: "Attendance" },
             { path: "/subjects", label: "Subjects" },
             { path: "/exams", label: "Exams" },
-            { path: "/contact", label: "Contact" },
+            { path: "/contact", label: "Feedback" },
           ].map((link) => (
             <NavLink
               key={link.path}

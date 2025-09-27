@@ -30,7 +30,7 @@ export default function Contact() {
       <div className="flex flex-1 items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="bg-gray-800 p-6 sm:p-8 md:p-12 rounded-xl shadow-xl w-full max-w-md md:max-w-lg lg:max-w-xl flex flex-col justify-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-center text-white">
-            Contact Me
+            Feedback
           </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <input

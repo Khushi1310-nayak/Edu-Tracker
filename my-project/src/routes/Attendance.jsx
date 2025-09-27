@@ -56,7 +56,7 @@ export default function Attendance() {
                   y: { beginAtZero: true, max: 100 },
                   x: { ticks: { autoSkip: false } },
                 },
-                barPercentage: 0.6, // makes bars shrink on small screens
+                barPercentage: 0.6,
                 categoryPercentage: 0.7,
               }}
             />
