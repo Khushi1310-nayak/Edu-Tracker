@@ -22,20 +22,22 @@ ChartJS.register(
   BarElement
 );
 
-function calcOverall(subjects) {
-  let total = 0,
-    attended = 0;
-  subjects.forEach((s) => {
-    total += s.totalClasses;
-    attended += s.attended;
-  });
-  const pct = total === 0 ? 0 : Math.round((attended / total) * 100);
-  return { total, attended, pct };
-}
-
 export default function Dashboard() {
-  const subjects = load("subjects", []);
-  const exams = load("exams", []);
+  const [subjects] = useState(() => load("subjects", []));
+  const [exams] = useState(() => load("exams", []));
+  const [missInput, setMissInput] = useState(0);
+
+  // --- Dashboard Calculations ---
+  const calcOverall = (subjects) => {
+    let total = 0,
+      attended = 0;
+    subjects.forEach((s) => {
+      total += s.totalClasses;
+      attended += s.attended;
+    });
+    const pct = total === 0 ? 0 : Math.round((attended / total) * 100);
+    return { total, attended, pct };
+  };
 
   const overall = calcOverall(subjects);
 
@@ -44,7 +46,7 @@ export default function Dashboard() {
     datasets: [
       {
         data: [overall.attended, overall.total - overall.attended],
-        backgroundColor: ["#60a5fa", "#f87171"], // keep blue/red
+        backgroundColor: ["#60a5fa", "#f87171"],
       },
     ],
   };
@@ -64,7 +66,6 @@ export default function Dashboard() {
     ],
   };
 
-  const [missInput, setMissInput] = useState(0);
   const simulatedPct =
     overall.total === 0
       ? 0
@@ -110,9 +111,20 @@ export default function Dashboard() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col items-center">
+        <div
+          className="inline-block px-4 py-3 rounded-xl text-indigo-400 
+                   border border-indigo-400 shadow-[0_0_15px_#ff0080]"
+        >
+          Hi, Welcome to Edu-Tracker
+        </div>
+      </div>
+
       {/* Overall Attendance */}
       <SpotCard className="col-span-1">
-        <h2 className="text-lg sm:text-xl font-medium mb-2">Overall Attendance</h2>
+        <h2 className="text-lg sm:text-xl font-medium mb-2">
+          Overall Attendance
+        </h2>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="w-full sm:w-40 max-w-[200px]">
             <Doughnut data={doughnutData} />
@@ -128,7 +140,9 @@ export default function Dashboard() {
 
       {/* Subject-wise Attendance */}
       <SpotCard className="col-span-1 sm:col-span-2 lg:col-span-2">
-        <h2 className="text-lg sm:text-xl font-medium mb-2">Subject-wise Attendance</h2>
+        <h2 className="text-lg sm:text-xl font-medium mb-2">
+          Subject-wise Attendance
+        </h2>
         <div className="w-full h-64 sm:h-72 md:h-80 overflow-x-auto">
           <Bar
             data={barData}
@@ -162,7 +176,9 @@ export default function Dashboard() {
                 className="flex flex-col sm:flex-row justify-between sm:items-center py-2 gap-2"
               >
                 <div>
-                  <div className="font-semibold">{ex.subject} ({ex.code || "No code"})</div>
+                  <div className="font-semibold">
+                    {ex.subject} ({ex.code || "No code"})
+                  </div>
                   <div className="text-xs sm:text-sm text-gray-400">
                     {ex.type || "Exam"} | {ex.syllabus?.length || 0} chapters
                   </div>
@@ -172,8 +188,11 @@ export default function Dashboard() {
                   <div className="text-gray-400">
                     {Math.max(
                       0,
-                      Math.ceil((new Date(ex.date) - new Date()) / (1000 * 60 * 60 * 24))
-                    )} days left
+                      Math.ceil(
+                        (new Date(ex.date) - new Date()) / (1000 * 60 * 60 * 24)
+                      )
+                    )}{" "}
+                    days left
                   </div>
                 </div>
               </li>
@@ -184,7 +203,9 @@ export default function Dashboard() {
 
       {/* What-if Missed Classes */}
       <SpotCard className="col-span-1">
-        <h2 className="text-lg sm:text-xl font-medium mb-2">What if I Miss Classes?</h2>
+        <h2 className="text-lg sm:text-xl font-medium mb-2">
+          What if I Miss Classes?
+        </h2>
         <input
           type="number"
           min={0}
@@ -209,7 +230,9 @@ export default function Dashboard() {
           Export Dashboard PDF
         </button>
         <div>
-          <label className="block mb-1 text-sm sm:text-base">Upload Resume / CV:</label>
+          <label className="block mb-1 text-sm sm:text-base">
+            Upload Resume / CV:
+          </label>
           <input
             type="file"
             accept=".pdf,.doc,.docx"

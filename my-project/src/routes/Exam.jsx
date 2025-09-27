@@ -6,6 +6,7 @@ export default function Exams() {
   const [exams, setExams] = useState(() => load("exams", []));
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [error, setError] = useState(""); // 🔥 error state
 
   const [form, setForm] = useState({
     subject: "",
@@ -26,10 +27,19 @@ export default function Exams() {
       syllabus: [""],
     });
     setEditId(null);
+    setError("");
   }
 
   function addOrUpdate() {
-    if (!form.subject || !form.date) return;
+    // ✅ Validation
+    if (!form.subject.trim()) {
+      setError("Subject name is required.");
+      return;
+    }
+    if (!form.date) {
+      setError("Please select a date for the exam.");
+      return;
+    }
 
     if (editId) {
       setExams((prev) =>
@@ -50,6 +60,7 @@ export default function Exams() {
   function edit(exam) {
     setForm(exam);
     setEditId(exam.id);
+    setError("");
     setShowModal(true);
   }
 
@@ -161,6 +172,11 @@ export default function Exams() {
             </h2>
 
             <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+              {/* 🔥 Show Error if exists */}
+              {error && (
+                <p className="text-red-400 text-sm font-medium">{error}</p>
+              )}
+
               <input
                 value={form.subject}
                 onChange={(e) => setForm({ ...form, subject: e.target.value })}

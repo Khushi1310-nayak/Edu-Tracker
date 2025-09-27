@@ -6,6 +6,8 @@ export default function Subjects() {
   const [subjects, setSubjects] = useState(() => load("subjects", []));
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [error, setError] = useState("");
+
   const [form, setForm] = useState({
     name: "",
     code: "",
@@ -15,7 +17,15 @@ export default function Subjects() {
     labAttended: 0,
   });
 
-  useEffect(() => save("subjects", subjects), [subjects]);
+  // Save subjects with error handling
+  useEffect(() => {
+    try {
+      save("subjects", subjects);
+    } catch (err) {
+      console.error("Failed to save subjects", err);
+      alert("Couldn’t save subjects, please try again!");
+    }
+  }, [subjects]);
 
   function resetForm() {
     setForm({
@@ -27,10 +37,25 @@ export default function Subjects() {
       labAttended: 0,
     });
     setEditingId(null);
+    setError("");
+  }
+
+  function validateForm() {
+    if (!form.name.trim()) return "Subject name is required!";
+    if (!form.code.trim()) return "Subject code is required!";
+    if (form.totalClasses < 0 || form.attended < 0 || form.labTotal < 0 || form.labAttended < 0)
+      return "Numbers cannot be negative!";
+    if (form.attended > form.totalClasses) return "Attended classes cannot exceed total classes!";
+    if (form.labAttended > form.labTotal) return "Attended labs cannot exceed total labs!";
+    return null;
   }
 
   function addOrUpdate() {
-    if (!form.name || !form.code) return;
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
 
     if (editingId) {
       setSubjects((prev) =>
@@ -68,15 +93,8 @@ export default function Subjects() {
       {/* Subject list */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {subjects.map((s) => {
-          const pct =
-            s.totalClasses === 0
-              ? 0
-              : Math.round((s.attended / s.totalClasses) * 100);
-
-          const labPct =
-            s.labTotal === 0
-              ? 0
-              : Math.round((s.labAttended / s.labTotal) * 100);
+          const pct = s.totalClasses === 0 ? 0 : Math.round((s.attended / s.totalClasses) * 100);
+          const labPct = s.labTotal === 0 ? 0 : Math.round((s.labAttended / s.labTotal) * 100);
 
           return (
             <SpotCard key={s.id} className="flex flex-col">
@@ -87,8 +105,7 @@ export default function Subjects() {
                     {s.name} ({s.code})
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {s.attended}/{s.totalClasses} classes | {s.labAttended}/
-                    {s.labTotal} labs
+                    {s.attended}/{s.totalClasses} classes | {s.labAttended}/{s.labTotal} labs
                   </div>
                 </div>
 
@@ -106,9 +123,7 @@ export default function Subjects() {
                     + Attended
                   </button>
                   <button
-                    onClick={() =>
-                      update(s.id, { totalClasses: s.totalClasses + 1 })
-                    }
+                    onClick={() => update(s.id, { totalClasses: s.totalClasses + 1 })}
                     className="px-2 sm:px-3 py-1 rounded-md bg-red-500 text-white text-xs sm:text-sm"
                   >
                     + Missed
@@ -117,6 +132,7 @@ export default function Subjects() {
                     onClick={() => {
                       setForm(s);
                       setEditingId(s.id);
+                      setError("");
                       setShowModal(true);
                     }}
                     className="px-2 sm:px-3 py-1 rounded-md bg-yellow-500 text-white text-xs sm:text-sm"
@@ -132,28 +148,20 @@ export default function Subjects() {
                   <div className="w-full sm:w-2/3 bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <div
                       style={{ width: `${pct}%` }}
-                      className={`h-3 rounded-full transition-all ${
-                        pct < 75 ? "bg-red-500" : "bg-indigo-500"
-                      }`}
+                      className={`h-3 rounded-full transition-all ${pct < 75 ? "bg-red-500" : "bg-indigo-500"}`}
                     ></div>
                   </div>
-                  <div className="text-sm font-medium text-center sm:text-right">
-                    {pct}% Theory
-                  </div>
+                  <div className="text-sm font-medium text-center sm:text-right">{pct}% Theory</div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div className="w-full sm:w-2/3 bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <div
                       style={{ width: `${labPct}%` }}
-                      className={`h-3 rounded-full transition-all ${
-                        labPct < 75 ? "bg-red-500" : "bg-green-500"
-                      }`}
+                      className={`h-3 rounded-full transition-all ${labPct < 75 ? "bg-red-500" : "bg-green-500"}`}
                     ></div>
                   </div>
-                  <div className="text-sm font-medium text-center sm:text-right">
-                    {labPct}% Lab
-                  </div>
+                  <div className="text-sm font-medium text-center sm:text-right">{labPct}% Lab</div>
                 </div>
               </div>
 
@@ -171,7 +179,7 @@ export default function Subjects() {
         })}
       </div>
 
-      {/* Add button always visible */}
+      {/* Add Subject Button */}
       <div className="flex justify-center">
         <button
           onClick={() => {
@@ -188,11 +196,12 @@ export default function Subjects() {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 px-4">
           <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">
-              {editingId ? "Edit Subject" : "Add Subject"}
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">{editingId ? "Edit Subject" : "Add Subject"}</h2>
 
             <div className="space-y-3">
+              {/* Error message */}
+              {error && <p className="text-red-400 text-sm font-medium">{error}</p>}
+
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -208,36 +217,28 @@ export default function Subjects() {
               <input
                 type="number"
                 value={form.totalClasses}
-                onChange={(e) =>
-                  setForm({ ...form, totalClasses: Number(e.target.value) })
-                }
+                onChange={(e) => setForm({ ...form, totalClasses: Number(e.target.value) })}
                 className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-600 text-sm"
                 placeholder="Total theory classes"
               />
               <input
                 type="number"
                 value={form.attended}
-                onChange={(e) =>
-                  setForm({ ...form, attended: Number(e.target.value) })
-                }
+                onChange={(e) => setForm({ ...form, attended: Number(e.target.value) })}
                 className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-600 text-sm"
                 placeholder="Attended theory classes"
               />
               <input
                 type="number"
                 value={form.labTotal}
-                onChange={(e) =>
-                  setForm({ ...form, labTotal: Number(e.target.value) })
-                }
+                onChange={(e) => setForm({ ...form, labTotal: Number(e.target.value) })}
                 className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-600 text-sm"
                 placeholder="Total lab classes"
               />
               <input
                 type="number"
                 value={form.labAttended}
-                onChange={(e) =>
-                  setForm({ ...form, labAttended: Number(e.target.value) })
-                }
+                onChange={(e) => setForm({ ...form, labAttended: Number(e.target.value) })}
                 className="w-full px-3 py-2 rounded-md bg-gray-800 border border-gray-600 text-sm"
                 placeholder="Attended lab classes"
               />
@@ -246,8 +247,8 @@ export default function Subjects() {
             <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
               <button
                 onClick={() => {
-                  setShowModal(false);
                   resetForm();
+                  setShowModal(false);
                 }}
                 className="px-4 py-2 rounded-md border border-gray-500 w-full sm:w-auto"
               >

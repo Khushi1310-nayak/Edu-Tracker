@@ -4,6 +4,7 @@ import Attendance from "./routes/Attendance";
 import Subjects from "./routes/Subjects";
 import Exams from "./routes/Exam";
 import Contact from "./routes/Contact";
+import GetStarted from "./routes/GetStarted";
 
 import "./App.css";
 
@@ -43,6 +44,19 @@ function App() {
               {link.label}
             </NavLink>
           ))}
+
+          <NavLink
+            to="/get-started"
+            className={({ isActive }) =>
+              `px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-all duration-300 ${
+                isActive
+                  ? "bg-gray-700 text-white shadow-[0_0_15px_#3b82f6]" // active: gray bg + neon blue glow
+                  : "bg-gray-600 text-white hover:shadow-[0_0_20px_#3b82f6]" // normal gray + neon glow on hover
+              }`
+            }
+          >
+            🚀 Get Started
+          </NavLink>
         </nav>
       </header>
 
@@ -55,6 +69,7 @@ function App() {
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/exams" element={<Exams />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/get-started" element={<GetStarted />} />
         </Routes>
       </main>
     </div>
