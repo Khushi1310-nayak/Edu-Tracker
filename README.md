@@ -1,142 +1,121 @@
-Edu Tracker
+# 📘 Edu-Tracker  
+### Exam & Attendance Management System
 
-Edu Tracker is a React-based web app for students to track attendance, exams, and study progress in one place. It provides visual charts, upcoming exam schedules, and interactive features to help students stay organized and on top of their academics.
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-Features
-
----
-
-Dashboard
+**Edu-Tracker** is a web-based **exam and attendance tracker** designed for students to manage their academic life efficiently.  
+It helps track attendance, subjects, exams, feedback, and performance insights — all from a single interactive dashboard.
 
 ---
 
-Overall attendance percentage.
+## 🌟 Overview
 
-Subject-wise attendance chart.
+Students often struggle to keep track of:
+- Attendance percentages  
+- Upcoming exams  
+- Subject-wise progress  
+- Academic performance data  
 
-Upcoming exams preview.
-
-What-if analysis for missed classes.
-
-Export attendance data as PDF.
-
-Subjects Page
+**Edu-Tracker** solves this by providing a centralized, visual, and easy-to-use system that keeps all academic information organized and accessible.
 
 ---
 
-Add, edit, and delete subjects.
+## ✨ Key Features
 
-Track theory and lab attendance separately.
+📊 **Dashboard**  
+A unified dashboard that gives an overview of attendance, exams, subjects, and performance insights at a glance.
 
-Progress bars for each subject’s attendance.
+📅 **Attendance Tracker**  
+Track attendance for each subject and monitor overall attendance percentage to stay exam-ready.
 
-Exams Page
+📚 **Subjects Management**  
+Add, edit, and manage subjects with ease for better academic organization.
 
----
+📝 **Exam Tracker**  
+Keep track of exams, schedules, and subject-wise exam details.
 
-Add exams with subject, date, syllabus, and type (Midterm, Final, Quiz, Revision).
+💬 **Feedback System**  
+Add and manage feedback related to subjects or exams for self-improvement.
 
-Automatically categorize exams by type.
+📈 **Visual Insights (Charts)**  
+Interactive **bar graphs and charts** to visualize academic performance and attendance trends.
 
-Edit and delete exams.
+📤 **Export Dashboard**  
+Export your dashboard data for record-keeping or sharing purposes.
 
-Calendar view for upcoming exams.
+📄 **Resume Upload**  
+Upload and store resumes directly within the platform for academic or placement readiness.
 
-Contact Page
-
----
-
-Contact form integrated with EmailJS for sending messages.
-
-Sign Up / Sign In
-
----
-
-Redirects to Dashboard after signup.
-
-Stores user info in local storage.
-
-Export / Resume Feature
-
-Export full attendance data as PDF.
-
-Option to attach your resume or CV.
+🚀 **Getting Started Guide**  
+A guided onboarding experience to help users understand and use the app effectively.
 
 ---
 
-Tech Stack
+## 🛠️ Tech Stack
 
-Frontend: React, Tailwind CSS, Chart.js
+| Technology | Purpose |
+|----------|---------|
+| **React** | Frontend framework |
+| **Tailwind CSS** | Styling & UI design |
+| **Chart.js** | Data visualization (bar graphs, charts) |
+| **Email.js** | Email & communication features |
+| **JavaScript** | Core logic |
+| **HTML/CSS** | Structure & layout |
 
-Email: EmailJS for contact form functionality
-
-PDF Export: jsPDF
-
-State Management: React useState and useEffect
-
-Routing: React Router DOM
 ---
 
+## 🚀 Getting Started (Local Setup)
+
+Follow these steps to run the project locally:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Khushi1310-nayak/Edu-Tracker.git
+
+2. **Navigate to the project directory**
+   ```bash
+   cd Edu-Tracker
+
+3. **Install dependencies**
+   ```bash
+   npm install
+
+4. **Run the application**
+   ```bash
+   npm run dev
+
+## 📸 Screenshots
+
+<img width="1890" height="1001" alt="Screenshot (971)" src="https://github.com/user-attachments/assets/2e998852-a129-4cc6-b9e0-c67e133708b2" />
+
+<img width="1887" height="983" alt="Screenshot (972)" src="https://github.com/user-attachments/assets/f59f231e-267d-4c81-8d47-984da0b268a0" />
+
+<img width="1904" height="990" alt="Screenshot (973)" src="https://github.com/user-attachments/assets/338f5b9d-e31c-4f70-a907-b7b661435040" />
+
+<img width="1845" height="988" alt="Screenshot (974)" src="https://github.com/user-attachments/assets/a24b0600-420f-4fa1-b104-d7dfcf1a877e" />
+
+
+## 🔮 Future Enhancements
+```bash
+✨ User authentication & profiles
+✨ Cloud storage for academic records
+✨ Notifications for exams & attendance alerts
+✨ Mobile-responsive improvements
+✨ Advanced analytics & reports
 ```
-Installation
 
-Clone the repository:
+## 🤝 Contributing
 
-git clone https://github.com/your-username/edu-tracker.git
-cd edu-tracker/my-project
+Contributions are welcome!
+Feel free to fork the repository, create a feature branch, and submit a pull request.
 
+## 📜 License
 
-Install dependencies:
+This project is licensed under the MIT License.
 
-npm install
+## 👩‍💻 Author
 
+Khushi Nayak
+Student Developer | Frontend Enthusiast
 
-Run the project:
-
-npm run dev
-
-
-Open the app in your browser at http://localhost:5173
-```
----
-Usage
-
-Sign Up
-
-Enter your name, email, and password.
-
-Click “Sign Up” to go to the Dashboard.
-
-Add Subjects
-
-Click “Add Subject” → fill in name, code, total classes, attended classes, lab info.
-
-Track Attendance
-
-Increment attended or missed classes with buttons.
-
-See progress bars and overall attendance percentages.
-
-Add Exams
-
-Click “Add Exam” → fill in subject, code, syllabus (up to 10 chapters), date, and type.
-
-Edit or delete exams as needed.
-
-Export Data
-
-Go to Dashboard → use export buttons to generate PDF of attendance, exams, and subjects.
-
-Contact
-
-Fill in your message → EmailJS will send it directly to your configured email.
-
-Notes
-
-Make sure to set up EmailJS with your service ID, template ID, and user ID in the Contact page.
-
-node_modules/ is ignored in Git. Run npm install after cloning.
-
-License
-
-This project is open-source and free to use.
+GitHub: https://github.com/Khushi1310-nayak
